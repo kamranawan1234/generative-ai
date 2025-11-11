@@ -3,9 +3,12 @@ import gui.*;
 
 import javax.swing.*;
 
-public class App {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+public class App
+{
+    public static void main(String[] args)
+    {
+        SwingUtilities.invokeLater(() ->
+        {
             int populationSize = 20;
             int chromosomeLength = 20;
             double mutationRate = 0.05;
@@ -23,9 +26,12 @@ public class App {
 
             ControlPanel controlPanel = new ControlPanel(
                     ga,
-                    () -> { // start
-                        if (timer[0] == null) {
-                            timer[0] = new Timer(500, e -> {
+                    () ->
+                    { // start
+                        if (timer[0] == null)
+                        {
+                            timer[0] = new Timer(500, e ->
+                            {
                                 ga.evolveOneGeneration(popPanel);
                                 popPanel.setPopulation(ga.getPopulation());
                                 statsPanel.refresh();
@@ -34,19 +40,23 @@ public class App {
                             timer[0].start();
                         }
                     },
-                    () -> { // stop
-                        if (timer[0] != null) {
+                    () ->
+                    { // stop
+                        if (timer[0] != null)
+                        {
                             timer[0].stop();
                             timer[0] = null;
                         }
                     },
-                    () -> { // step
+                    () ->
+                    { // step
                         ga.evolveOneGeneration(popPanel);
                         popPanel.setPopulation(ga.getPopulation());
                         statsPanel.refresh();
                         histPanel.addFitness(ga.getAverageFitness());
                     },
-                    () -> { // restart
+                    () ->
+                    { // restart
                         ga.restart();
                         popPanel.setPopulation(ga.getPopulation());
                         statsPanel.refresh();
@@ -57,4 +67,4 @@ public class App {
             new MainWindow(ga, popPanel, statsPanel, histPanel, controlPanel);
         });
     }
-} 
+}
