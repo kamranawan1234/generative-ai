@@ -16,19 +16,19 @@ public class MainWindow extends JFrame
         setLayout(new BorderLayout());
 
         getContentPane().setBackground(new Color(24,24,24));
-    popPanel.setAutoscrolls(true);
-    JScrollPane scrollPane = new JScrollPane(popPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scrollPane.setBackground(new Color(24,24,24));
-    scrollPane.getViewport().setBackground(new Color(24,24,24));
-    scrollPane.setBorder(BorderFactory.createLineBorder(new Color(60,60,60), 2));
-    // Set fixed viewport size for reliable scrolling
-    scrollPane.getViewport().setPreferredSize(new Dimension(800, 600));
-    // Increase scroll speed
-    scrollPane.getVerticalScrollBar().setUnitIncrement(32);
-    scrollPane.getVerticalScrollBar().setBlockIncrement(128);
-    scrollPane.getHorizontalScrollBar().setUnitIncrement(32);
-    scrollPane.getHorizontalScrollBar().setBlockIncrement(128);
-    add(scrollPane, BorderLayout.CENTER);
+        popPanel.setAutoscrolls(true);
+        JScrollPane scrollPane = new JScrollPane(popPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBackground(new Color(24,24,24));
+        scrollPane.getViewport().setBackground(new Color(24,24,24));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(60,60,60), 2));
+        // Set fixed viewport size for reliable scrolling
+        scrollPane.getViewport().setPreferredSize(new Dimension(800, 600));
+        // Increase scroll speed
+        scrollPane.getVerticalScrollBar().setUnitIncrement(32);
+        scrollPane.getVerticalScrollBar().setBlockIncrement(128);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(32);
+        scrollPane.getHorizontalScrollBar().setBlockIncrement(128);
+        add(scrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.setBackground(new Color(24,24,24));
@@ -38,9 +38,9 @@ public class MainWindow extends JFrame
 
         add(rightPanel, BorderLayout.EAST);
 
-    setExtendedState(JFrame.MAXIMIZED_BOTH);
-    setLocationRelativeTo(null);
-    setVisible(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
     // DARK MODE PATCH END
 }

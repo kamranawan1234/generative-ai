@@ -11,8 +11,8 @@ public class App
         {
             int populationSize = 20;
             int chromosomeLength = 20;
-            double mutationRate = 0.05;
-            double crossoverRate = 0.7;
+            double mutationRate = 0.1;
+            double crossoverRate = 0.75;
 
             GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, chromosomeLength, mutationRate, crossoverRate);
 
@@ -63,6 +63,8 @@ public class App
                         histPanel.clear();
                     }
             );
+
+            ga.addControlPanel(controlPanel);
 
             new MainWindow(ga, popPanel, statsPanel, histPanel, controlPanel);
         });

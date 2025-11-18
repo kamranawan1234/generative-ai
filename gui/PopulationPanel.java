@@ -24,9 +24,9 @@ public class PopulationPanel extends JPanel
 
     public void setPopulation(Individual[] population)
     {
-    this.population = population;
-    revalidate(); // DYNAMIC SCROLLBAR PATCH
-    repaint();
+        this.population = population;
+        revalidate(); // DYNAMIC SCROLLBAR PATCH
+        repaint();
     }
 
     public void refresh()
@@ -71,20 +71,20 @@ public class PopulationPanel extends JPanel
         setBackground(new Color(24,24,24));
         if (population == null) return;
 
-    int panelW = getWidth();
-    int panelH = getHeight();
-    int numCols = population[0].getChromosome().length;
-    int numRows = population.length;
-    int leftMargin = 60;
-    int topMargin = 40;
-    int rightMargin = 30;
-    int bottomMargin = 40;
-    int cellSize = 32; // LARGER FIXED CELL SIZE FOR SCROLL PATCH
-    int gridW = cellSize * numCols;
-    int gridH = cellSize * numRows;
-    // Center grid in panel
-    int xOffset = leftMargin + Math.max(0, (panelW - leftMargin - rightMargin - gridW) / 2);
-    int yOffset = topMargin + Math.max(0, (panelH - topMargin - bottomMargin - gridH) / 2);
+        int panelW = getWidth();
+        int panelH = getHeight();
+        int numCols = population[0].getChromosome().length;
+        int numRows = population.length;
+        int leftMargin = 60;
+        int topMargin = 40;
+        int rightMargin = 30;
+        int bottomMargin = 40;
+        int cellSize = 32; // LARGER FIXED CELL SIZE FOR SCROLL PATCH
+        int gridW = cellSize * numCols;
+        int gridH = cellSize * numRows;
+        // Center grid in panel
+        int xOffset = leftMargin + Math.max(0, (panelW - leftMargin - rightMargin - gridW) / 2);
+        int yOffset = topMargin + Math.max(0, (panelH - topMargin - bottomMargin - gridH) / 2);
 
         int maxFitness = numCols;
         int bestFitness = Arrays.stream(population).mapToInt(Individual::getFitness).max().orElse(0);

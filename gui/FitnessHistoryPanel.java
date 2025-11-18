@@ -92,12 +92,12 @@ public class FitnessHistoryPanel extends JPanel
         int size = history.size();
         double max = history.stream().mapToDouble(Double::doubleValue).max().orElse(1);
 
-    int leftMargin = 60;
-    int bottomMargin = 40;
-    int topMargin = 40;
-    int rightMargin = 30;
-    int graphW = w - leftMargin - rightMargin;
-    int graphH = h - topMargin - bottomMargin;
+        int leftMargin = 60;
+        int bottomMargin = 40;
+        int topMargin = 40;
+        int rightMargin = 30;
+        int graphW = w - leftMargin - rightMargin;
+        int graphH = h - topMargin - bottomMargin;
 
         g.setColor(new Color(60,60,60));
         g.fillRect(leftMargin, topMargin, graphW, graphH);

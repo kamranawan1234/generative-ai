@@ -4,10 +4,11 @@ import ga.GeneticAlgorithm;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Random;
 
-public class ControlPanel extends JPanel
-{
+public class ControlPanel extends JPanel {
     private final JButton startBtn = new JButton("Start");
     private final JButton stepBtn = new JButton("Step");
     private final JButton restartBtn = new JButton("Restart");
@@ -22,53 +23,64 @@ public class ControlPanel extends JPanel
     private final JLabel populationLabel;
 
     private final Random random = new Random();
+    private boolean isRunning = false;
 
-    private boolean isRunning = false; // Start/Stop toggle state
-
-    public ControlPanel(GeneticAlgorithm ga, Runnable startAction, Runnable stopAction, Runnable stepAction, Runnable restartAction)
-    {
+    public ControlPanel(GeneticAlgorithm ga, Runnable startAction, Runnable stopAction, Runnable stepAction, Runnable restartAction) {
         setLayout(new GridLayout(2, 1, 0, 10));
         setBackground(new Color(30, 30, 30));
         setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2));
 
-        // ===== BUTTONS =====
+        // ===== BUTTONS PANEL (NO RESIZING EVER) =====
         JPanel buttons = new JPanel();
         buttons.setBackground(new Color(30, 30, 30));
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
 
-        // Tooltips for keybinds
+        // Fixed size for ALL buttons so frame never resizes
+        Dimension btnSize = new Dimension(110, 38);
+
+        JButton[] btnList = {startBtn, stepBtn, restartBtn, randomizeBtn};
+
+        for (JButton btn : btnList) {
+            btn.setMinimumSize(btnSize);
+            btn.setPreferredSize(btnSize);
+            btn.setMaximumSize(btnSize);
+        }
+
+        // Tooltips
         startBtn.setToolTipText("Space → Start/Stop");
         stepBtn.setToolTipText("Enter → Step");
         restartBtn.setToolTipText("X → Restart");
         randomizeBtn.setToolTipText("R → Randomize");
 
-        // Start button initial color (stopped = red)
-        startBtn.setBackground(new Color(244, 67, 54)); 
+        // Start button initial color
+        startBtn.setBackground(new Color(244, 67, 54));
         startBtn.setForeground(Color.WHITE);
         styleButton(startBtn);
 
-        // Other buttons default red, green when pressed
+        // Other buttons default red
         for (JButton btn : new JButton[]{stepBtn, restartBtn, randomizeBtn}) {
-            btn.setBackground(new Color(244, 67, 54)); // Red
+            btn.setBackground(new Color(244, 67, 54));
             btn.setForeground(Color.WHITE);
             styleButton(btn);
         }
 
-        for (JButton btn : new JButton[]{startBtn, stepBtn, restartBtn, randomizeBtn}) {
+        // Add buttons with spacing
+        for (JButton btn : btnList) {
             buttons.add(btn);
+            buttons.add(Box.createHorizontalStrut(10));
         }
 
         add(buttons);
 
         // ===== SLIDERS =====
-        mutationSlider = new JSlider(0, 100, (int)(ga.getMutationRate() * 100));
-        crossoverSlider = new JSlider(0, 100, (int)(ga.getCrossoverRate() * 100));
+        mutationSlider = new JSlider(0, 100, (int)(ga.getCurrentMutationRate() * 100)); // initial value based on the updated mutation rate
+        crossoverSlider = new JSlider(0, 100, (int)(ga.getCrossoverRate() * 100)); // initial value based on GA
         populationSlider = new JSlider(10, 50, ga.getPopulationSize());
 
         mutationLabel = makeValueLabel("Mutation Rate", mutationSlider.getValue() + "%");
         crossoverLabel = makeValueLabel("Crossover Rate", crossoverSlider.getValue() + "%");
         populationLabel = makeValueLabel("Population Size", String.valueOf(populationSlider.getValue()));
 
-        // ===== SLIDER STYLING =====
         styleSlider(mutationSlider, new Color(255, 0, 0));
         styleSlider(crossoverSlider, new Color(0, 255, 0));
         styleSlider(populationSlider, new Color(255, 180, 120));
@@ -78,25 +90,27 @@ public class ControlPanel extends JPanel
         populationSlider.setPaintTicks(true);
         populationSlider.setPaintLabels(true);
 
-        // ===== CHANGE LISTENERS =====
+        // ===== SLIDER CHANGE LISTENERS =====
         mutationSlider.addChangeListener(e -> {
             double rate = mutationSlider.getValue() / 100.0;
-            ga.setMutationRate(rate);
+            ga.setMutationRate(rate);  // Update mutation rate in GA
             mutationLabel.setText("Mutation Rate: " + mutationSlider.getValue() + "%");
+            mutationLabel.revalidate();  // Revalidate the label to make sure it's updated
+            mutationLabel.repaint();  // Repaint the label to display the change
         });
 
         crossoverSlider.addChangeListener(e -> {
             double rate = crossoverSlider.getValue() / 100.0;
-            ga.setCrossoverRate(rate);
+            ga.setCrossoverRate(rate);  // Update crossover rate in GA
             crossoverLabel.setText("Crossover Rate: " + crossoverSlider.getValue() + "%");
         });
 
         populationSlider.addChangeListener(e -> {
-            ga.setPopulationSize(populationSlider.getValue());
+            ga.setPopulationSize(populationSlider.getValue());  // Update population size in GA
             populationLabel.setText("Population Size: " + populationSlider.getValue());
         });
 
-        // ===== SLIDER PANEL =====
+        // Panel for sliders and their labels
         JPanel sliders = new JPanel(new GridLayout(3, 2, 10, 5));
         sliders.setBackground(new Color(30, 30, 30));
 
@@ -109,13 +123,13 @@ public class ControlPanel extends JPanel
 
         add(sliders);
 
-        // ===== BUTTON ACTIONS =====
+        // ===== ACTIONS =====
         startBtn.addActionListener(e -> toggleStartStop(ga, startAction, stopAction));
         stepBtn.addActionListener(e -> stepAction.run());
         restartBtn.addActionListener(e -> restartAction.run());
         randomizeBtn.addActionListener(e -> randomizeParameters(ga));
 
-        // ===== KEYBOARD SHORTCUTS =====
+        // ===== KEYBINDINGS =====
         setupKeyBindings(ga, startAction, stopAction, stepAction, restartAction);
     }
 
@@ -140,12 +154,17 @@ public class ControlPanel extends JPanel
 
             @Override
             public void paintTrack(Graphics g) {
+                int value = slider.getValue() - slider.getMinimum();
+                int range = slider.getMaximum() - slider.getMinimum();
+                double percent = value / (double) range;
+                int fillWidth = (int) (percent * trackRect.width);
+
                 g.setColor(color);
-                int fillWidth = thumbRect.x + thumbRect.width / 2 - trackRect.x;
                 g.fillRect(trackRect.x, trackRect.y + trackRect.height / 2 - 2, fillWidth, 4);
 
                 g.setColor(new Color(60, 60, 60));
-                g.fillRect(trackRect.x + fillWidth, trackRect.y + trackRect.height / 2 - 2,
+                g.fillRect(trackRect.x + fillWidth,
+                        trackRect.y + trackRect.height / 2 - 2,
                         trackRect.width - fillWidth, 4);
             }
         });
@@ -156,15 +175,14 @@ public class ControlPanel extends JPanel
         button.setFont(new Font("Segoe UI", Font.BOLD, 14));
         button.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
 
-        // Change color when pressed
         button.getModel().addChangeListener(e -> {
             if (button.getModel().isPressed()) {
                 if (button != startBtn) {
-                    button.setBackground(new Color(76, 175, 80)); // green on press
+                    button.setBackground(new Color(76, 175, 80));
                 }
             } else {
                 if (button != startBtn) {
-                    button.setBackground(new Color(244, 67, 54)); // red default
+                    button.setBackground(new Color(244, 67, 54));
                 }
             }
         });
@@ -174,11 +192,11 @@ public class ControlPanel extends JPanel
         if (!isRunning) {
             startAction.run();
             startBtn.setText("Stop");
-            startBtn.setBackground(new Color(76, 175, 80)); // Green = running
+            startBtn.setBackground(new Color(76, 175, 80));
         } else {
             stopAction.run();
             startBtn.setText("Start");
-            startBtn.setBackground(new Color(244, 67, 54)); // Red = stopped
+            startBtn.setBackground(new Color(244, 67, 54));
         }
         isRunning = !isRunning;
     }
@@ -205,36 +223,43 @@ public class ControlPanel extends JPanel
         InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = getActionMap();
 
-        // Space = toggle start/stop
         im.put(KeyStroke.getKeyStroke("SPACE"), "toggleStartStop");
         am.put("toggleStartStop", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 toggleStartStop(ga, startAction, stopAction);
             }
         });
 
-        // Enter = step
-        im.put(KeyStroke.getKeyStroke("ENTER"), "step");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "step");
         am.put("step", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 stepAction.run();
             }
         });
 
-        // X = restart
-        im.put(KeyStroke.getKeyStroke('x'), "restart");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "restart");
         am.put("restart", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 restartAction.run();
             }
         });
 
-        // R = randomize
-        im.put(KeyStroke.getKeyStroke('r'), "randomize");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "randomize");
         am.put("randomize", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 randomizeParameters(ga);
             }
         });
+    }
+
+    // ===== METHOD TO UPDATE THE SLIDER IN REAL TIME =====
+    public void updateMutationSlider(GeneticAlgorithm ga) {
+        double avgMutationRate = ga.getAverageMutationRate();
+        mutationSlider.setValue((int)(avgMutationRate * 100));
+        mutationLabel.setText("Mutation Rate: " + mutationSlider.getValue() + "%");
     }
 }
