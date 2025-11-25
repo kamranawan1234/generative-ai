@@ -26,24 +26,29 @@ public class ControlPanel extends JPanel {
     private boolean isRunning = false;
 
     public ControlPanel(GeneticAlgorithm ga, Runnable startAction, Runnable stopAction, Runnable stepAction, Runnable restartAction) {
-        setLayout(new GridLayout(2, 1, 0, 10));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(new Color(30, 30, 30));
         setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2));
 
-        // ===== BUTTONS PANEL (NO RESIZING EVER) =====
-        JPanel buttons = new JPanel();
+        // ===== BUTTONS PANEL (CENTERED HORIZONTALLY) =====
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttons.setBackground(new Color(30, 30, 30));
-        buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
 
-        // Fixed size for ALL buttons so frame never resizes
+        // Fixed size for all buttons
         Dimension btnSize = new Dimension(110, 38);
 
         JButton[] btnList = {startBtn, stepBtn, restartBtn, randomizeBtn};
-
         for (JButton btn : btnList) {
             btn.setMinimumSize(btnSize);
             btn.setPreferredSize(btnSize);
             btn.setMaximumSize(btnSize);
+
+            // Style buttons
+            btn.setForeground(Color.WHITE);
+            btn.setBackground(new Color(244, 67, 54));
+            styleButton(btn);
+
+            buttons.add(btn);
         }
 
         // Tooltips
@@ -54,27 +59,14 @@ public class ControlPanel extends JPanel {
 
         // Start button initial color
         startBtn.setBackground(new Color(244, 67, 54));
-        startBtn.setForeground(Color.WHITE);
-        styleButton(startBtn);
 
-        // Other buttons default red
-        for (JButton btn : new JButton[]{stepBtn, restartBtn, randomizeBtn}) {
-            btn.setBackground(new Color(244, 67, 54));
-            btn.setForeground(Color.WHITE);
-            styleButton(btn);
-        }
-
-        // Add buttons with spacing
-        for (JButton btn : btnList) {
-            buttons.add(btn);
-            buttons.add(Box.createHorizontalStrut(10));
-        }
-
+        add(Box.createVerticalStrut(8)); // top padding
         add(buttons);
+        add(Box.createVerticalStrut(12)); // spacing between buttons and sliders
 
         // ===== SLIDERS =====
-        mutationSlider = new JSlider(0, 100, (int)(ga.getCurrentMutationRate() * 100)); // initial value based on the updated mutation rate
-        crossoverSlider = new JSlider(0, 100, (int)(ga.getCrossoverRate() * 100)); // initial value based on GA
+        mutationSlider = new JSlider(0, 100, (int)(ga.getCurrentMutationRate() * 100));
+        crossoverSlider = new JSlider(0, 100, (int)(ga.getCrossoverRate() * 100));
         populationSlider = new JSlider(10, 50, ga.getPopulationSize());
 
         mutationLabel = makeValueLabel("Mutation Rate", mutationSlider.getValue() + "%");
@@ -90,30 +82,27 @@ public class ControlPanel extends JPanel {
         populationSlider.setPaintTicks(true);
         populationSlider.setPaintLabels(true);
 
-        // ===== SLIDER CHANGE LISTENERS =====
         mutationSlider.addChangeListener(e -> {
             double rate = mutationSlider.getValue() / 100.0;
-            ga.setMutationRate(rate);  // Update mutation rate in GA
+            ga.setMutationRate(rate);
             mutationLabel.setText("Mutation Rate: " + mutationSlider.getValue() + "%");
-            mutationLabel.revalidate();  // Revalidate the label to make sure it's updated
-            mutationLabel.repaint();  // Repaint the label to display the change
+            mutationLabel.revalidate();
+            mutationLabel.repaint();
         });
 
         crossoverSlider.addChangeListener(e -> {
             double rate = crossoverSlider.getValue() / 100.0;
-            ga.setCrossoverRate(rate);  // Update crossover rate in GA
+            ga.setCrossoverRate(rate);
             crossoverLabel.setText("Crossover Rate: " + crossoverSlider.getValue() + "%");
         });
 
         populationSlider.addChangeListener(e -> {
-            ga.setPopulationSize(populationSlider.getValue());  // Update population size in GA
+            ga.setPopulationSize(populationSlider.getValue());
             populationLabel.setText("Population Size: " + populationSlider.getValue());
         });
 
-        // Panel for sliders and their labels
         JPanel sliders = new JPanel(new GridLayout(3, 2, 10, 5));
         sliders.setBackground(new Color(30, 30, 30));
-
         sliders.add(mutationLabel);
         sliders.add(mutationSlider);
         sliders.add(crossoverLabel);
@@ -122,6 +111,7 @@ public class ControlPanel extends JPanel {
         sliders.add(populationSlider);
 
         add(sliders);
+        add(Box.createVerticalStrut(8)); // bottom padding
 
         // ===== ACTIONS =====
         startBtn.addActionListener(e -> toggleStartStop(ga, startAction, stopAction));
@@ -136,7 +126,7 @@ public class ControlPanel extends JPanel {
     private JLabel makeValueLabel(String title, String value) {
         JLabel label = new JLabel(title + ": " + value);
         label.setForeground(Color.WHITE);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        label.setFont(new Font("Consolas", Font.PLAIN, 13));
         label.setHorizontalAlignment(SwingConstants.LEFT);
         return label;
     }
@@ -172,7 +162,7 @@ public class ControlPanel extends JPanel {
 
     private void styleButton(JButton button) {
         button.setFocusPainted(false);
-        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setFont(new Font("Consolas", Font.BOLD, 14));
         button.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
 
         button.getModel().addChangeListener(e -> {
@@ -256,7 +246,6 @@ public class ControlPanel extends JPanel {
         });
     }
 
-    // ===== METHOD TO UPDATE THE SLIDER IN REAL TIME =====
     public void updateMutationSlider(GeneticAlgorithm ga) {
         double avgMutationRate = ga.getAverageMutationRate();
         mutationSlider.setValue((int)(avgMutationRate * 100));

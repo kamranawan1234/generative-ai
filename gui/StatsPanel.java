@@ -3,6 +3,7 @@ package gui;
 import ga.GeneticAlgorithm;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class StatsPanel extends JPanel
@@ -16,11 +17,23 @@ public class StatsPanel extends JPanel
     public StatsPanel(GeneticAlgorithm ga)
     {
         this.ga = ga;
-        setLayout(new GridLayout(1,3,10,0));
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(60,60,60)), "Stats", 0, 0, null, Color.WHITE));
+
+        // CENTERING FIX: FlowLayout with gaps
+        setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
+
+        Font titleFont = new Font("Consolas", Font.BOLD, 14); // title font
+        setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(60, 60, 60)), // border color
+                "Stats",                                                // title text
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                titleFont,                                             // set the font here
+                Color.WHITE                                            // title color
+        ));
+
         setBackground(new Color(30,30,30));
 
-        Font labelFont = new Font("Segoe UI", Font.BOLD, 18);
+        Font labelFont = new Font("Consolas", Font.BOLD, 18);
         Color fg = new Color(220,220,220);
         generationLabel.setFont(labelFont);
         generationLabel.setForeground(fg);
@@ -36,9 +49,9 @@ public class StatsPanel extends JPanel
 
     public void refresh()
     {
-    generationLabel.setText(String.format("Gen: %d", ga.getGeneration()));
-    avgFitnessLabel.setText(String.format("Avg Fitness: %.2f", ga.getAverageFitness()));
-    bestFitnessLabel.setText(String.format("Best: %d", ga.getBestFitness()));
+        generationLabel.setText(String.format("Gen: %d", ga.getGeneration()));
+        avgFitnessLabel.setText(String.format("Avg Fitness: %.2f", ga.getAverageFitness()));
+        bestFitnessLabel.setText(String.format("Best: %d", ga.getBestFitness()));
     }
     // DARK MODE PATCH END
 }

@@ -1,3 +1,5 @@
+
+
 # Genetic Algorithm Visualizer
 
 This project is a Java-based GUI tool for visualizing the operation of a genetic algorithm. It features a modern dark mode interface and clear visual cues for genetic operations.

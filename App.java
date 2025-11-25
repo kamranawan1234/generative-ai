@@ -10,9 +10,9 @@ public class App
         SwingUtilities.invokeLater(() ->
         {
             int populationSize = 20;
-            int chromosomeLength = 20;
+            int chromosomeLength = 50;
             double mutationRate = 0.1;
-            double crossoverRate = 0.75;
+            double crossoverRate = 0.1;
 
             GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, chromosomeLength, mutationRate, crossoverRate);
 
