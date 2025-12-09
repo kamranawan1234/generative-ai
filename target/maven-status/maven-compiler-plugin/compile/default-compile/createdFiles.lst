@@ -1,0 +1,15 @@
+gui\ControlPanel$5.class
+gui\PopulationPanel.class
+gui\ControlPanel.class
+App.class
+gui\StatsPanel.class
+gui\ControlPanel$2.class
+gui\FitnessHistoryPanel$1.class
+gui\ControlPanel$3.class
+gui\ControlPanel$1.class
+gui\FitnessHistoryPanel.class
+gui\ControlPanel$4.class
+ga\Individual.class
+gui\MainWindow.class
+ga\GeneticAlgorithm.class
+gui\OperatorPanel.class
