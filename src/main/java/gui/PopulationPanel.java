@@ -10,6 +10,12 @@ import javax.swing.*;
 public class PopulationPanel extends JPanel {
   // DARK MODE PATCH START
   private Individual[] population;
+  // fixed cell size (computed once) so the grid does not keep resizing
+  private int fixedCellSize = -1;
+  private static final int LEFT_MARGIN = 100;
+  private static final int TOP_MARGIN = 50;
+  private static final int RIGHT_MARGIN = 30;
+  private static final int BOTTOM_MARGIN = 50;
   // cellSize is now dynamic
   private List<Point> mutationPoints = new ArrayList<>();
   private List<Point> crossoverPoints = new ArrayList<>();
@@ -21,6 +27,32 @@ public class PopulationPanel extends JPanel {
 
   public void setPopulation(Individual[] population) {
     this.population = population;
+    // compute a one-time fixed cell size so the grid keeps a single correct size
+    if (fixedCellSize == -1 && population != null && population.length > 0) {
+      int numCols = population[0].getChromosome().length;
+      int maxCell = 18;
+
+      // attempt to read the viewport width so we can fit exactly
+      int availWidth = -1;
+      java.awt.Container vp = SwingUtilities.getAncestorOfClass(javax.swing.JViewport.class, this);
+      if (vp instanceof javax.swing.JViewport) {
+        availWidth = ((javax.swing.JViewport) vp).getWidth();
+      }
+
+      if (availWidth <= 0) {
+        // fallback to a reasonable default (screen width minus margins)
+        availWidth = Math.max(600, java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 200);
+      }
+
+      int usableWidth = Math.max(100, availWidth - LEFT_MARGIN - RIGHT_MARGIN);
+      fixedCellSize = Math.max(4, usableWidth / Math.max(1, numCols));
+      fixedCellSize = Math.min(maxCell, fixedCellSize);
+
+      // ensure strict fit horizontally; reduce if necessary
+      while (LEFT_MARGIN + RIGHT_MARGIN + fixedCellSize * numCols > availWidth && fixedCellSize > 1) {
+        fixedCellSize--;
+      }
+    }
     revalidate(); // DYNAMIC SCROLLBAR PATCH
     repaint();
   }
@@ -67,20 +99,18 @@ public class PopulationPanel extends JPanel {
     setBackground(new Color(24, 24, 24));
     if (population == null) return;
 
-    int panelW = getWidth();
-    int panelH = getHeight();
-    int numCols = population[0].getChromosome().length;
+  int numCols = population[0].getChromosome().length;
     int numRows = population.length;
-    int leftMargin = 60;
-    int topMargin = 50;
-    int rightMargin = 30;
-    int bottomMargin = 50;
-    int cellSize = 32; // LARGER FIXED CELL SIZE FOR SCROLL PATCH
+
+    // Use the fixed cell size if available; otherwise use a conservative default
+    int cellSize = (fixedCellSize != -1) ? fixedCellSize : 32;
+
     int gridW = cellSize * numCols;
     int gridH = cellSize * numRows;
-    // Center grid in panel
-    int xOffset = leftMargin + Math.max(0, (panelW - leftMargin - rightMargin - gridW) / 2);
-    int yOffset = topMargin + Math.max(0, (panelH - topMargin - bottomMargin - gridH) / 2);
+
+    // align grid at left/top margins (no horizontal centering)
+    int xOffset = LEFT_MARGIN;
+    int yOffset = TOP_MARGIN;
 
     int maxFitness = numCols;
     int bestFitness = Arrays.stream(population).mapToInt(Individual::getFitness).max().orElse(0);
@@ -112,12 +142,14 @@ public class PopulationPanel extends JPanel {
     for (int i = 0; i < numRows; i += rowTickStep) {
       int y = yOffset + i * cellSize + cellSize / 2;
       g2.setColor(new Color(120, 120, 120));
-      g2.drawLine(xOffset - 8, y - 15, xOffset + gridW, y);
+      g2.drawLine(xOffset - 8, y - 8, xOffset + gridW, y - 8);
       g2.setColor(new Color(220, 220, 220));
-      g2.drawString(Integer.toString(i), xOffset - 25, y - 10);
+      g2.drawString(Integer.toString(i), xOffset - 30, y - 3);
     }
+    // Draw left axis label
     g2.setColor(new Color(220, 220, 220));
-    g2.drawString("Individual Index", xOffset - 150, yOffset + gridH / 2);
+    g2.setFont(new Font("Consolas", Font.PLAIN, 12));
+    g2.drawString("Individual", xOffset - 95, yOffset + gridH / 2 + 5);
 
     // Draw grid
     for (int i = 0; i < numRows; i++) {
@@ -169,13 +201,10 @@ public class PopulationPanel extends JPanel {
     if (population != null && population.length > 0) {
       int numCols = population[0].getChromosome().length;
       int numRows = population.length;
-      int leftMargin = 60;
-      int topMargin = 40;
-      int rightMargin = 30;
-      int bottomMargin = 40;
-      int cellSize = 32; // LARGER FIXED CELL SIZE FOR SCROLL PATCH
-      int gridW = cellSize * numCols + leftMargin + rightMargin;
-      int gridH = cellSize * numRows + topMargin + bottomMargin;
+      // Use the fixed size if computed, otherwise fall back to a default cell
+      int cellSize = (fixedCellSize != -1) ? fixedCellSize : 32;
+      int gridW = cellSize * numCols + LEFT_MARGIN + RIGHT_MARGIN;
+      int gridH = cellSize * numRows + TOP_MARGIN + BOTTOM_MARGIN;
       return new Dimension(gridW, gridH);
     }
     return new Dimension(400, 400);

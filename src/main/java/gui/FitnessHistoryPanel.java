@@ -21,7 +21,7 @@ public class FitnessHistoryPanel extends JPanel {
   private static final Color GRAPH_BG = new Color(60, 60, 60);
 
   public FitnessHistoryPanel() {
-    setPreferredSize(new Dimension(400, 150));
+    setPreferredSize(new Dimension(400, 250));
     Font titleFont = new Font("Consolas", Font.BOLD, 14); // your desired font
     TitledBorder border =
         BorderFactory.createTitledBorder(
@@ -65,7 +65,7 @@ public class FitnessHistoryPanel extends JPanel {
     if (history.isEmpty()) return -1;
 
     int w = getWidth(), h = getHeight();
-    int leftMargin = 60, rightMargin = 30, topMargin = 40, bottomMargin = 40;
+    int leftMargin = 60, rightMargin = 30, topMargin = 40, bottomMargin = 60;
     int graphW = w - leftMargin - rightMargin;
     int graphH = h - topMargin - bottomMargin;
 
@@ -106,7 +106,7 @@ public class FitnessHistoryPanel extends JPanel {
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     int w = getWidth(), h = getHeight();
-    int leftMargin = 60, rightMargin = 30, topMargin = 40, bottomMargin = 40;
+    int leftMargin = 60, rightMargin = 30, topMargin = 40, bottomMargin = 60;
     int graphW = w - leftMargin - rightMargin;
     int graphH = h - topMargin - bottomMargin;
 
@@ -159,7 +159,7 @@ public class FitnessHistoryPanel extends JPanel {
       g2.drawString(Integer.toString(val), x - 10, top + graphH + 28);
     }
     g2.setColor(LABEL_COLOR);
-    g2.drawString("Generation", left + graphW / 2 - 40, top + graphH + 35);
+    g2.drawString("Generation", left + graphW / 2 - 35, top + graphH + 50);
   }
 
   private void drawFitnessLine(Graphics2D g2, int left, int top, int graphW, int graphH) {

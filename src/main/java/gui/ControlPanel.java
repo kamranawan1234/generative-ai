@@ -144,7 +144,7 @@ public class ControlPanel extends JPanel {
     slider.setForeground(color);
 
     slider.setUI(
-        new javax.swing.plaf.metal.MetalSliderUI() {
+        new javax.swing.plaf.basic.BasicSliderUI(slider) {
           @Override
           public void paintThumb(Graphics g) {
             g.setColor(color);
