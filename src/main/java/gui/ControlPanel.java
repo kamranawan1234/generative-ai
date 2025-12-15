@@ -34,11 +34,9 @@ public class ControlPanel extends JPanel {
     setBackground(new Color(30, 30, 30));
     setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2));
 
-    // ===== BUTTONS PANEL (CENTERED HORIZONTALLY) =====
     JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
     buttons.setBackground(new Color(30, 30, 30));
 
-    // Fixed size for all buttons
     Dimension btnSize = new Dimension(110, 38);
 
     JButton[] btnList = {startBtn, stepBtn, restartBtn, randomizeBtn};
@@ -47,7 +45,6 @@ public class ControlPanel extends JPanel {
       btn.setPreferredSize(btnSize);
       btn.setMaximumSize(btnSize);
 
-      // Style buttons
       btn.setForeground(Color.WHITE);
       btn.setBackground(new Color(244, 67, 54));
       styleButton(btn);
@@ -55,20 +52,16 @@ public class ControlPanel extends JPanel {
       buttons.add(btn);
     }
 
-    // Tooltips
     startBtn.setToolTipText("Space → Start/Stop");
     stepBtn.setToolTipText("Enter → Step");
     restartBtn.setToolTipText("X → Restart");
     randomizeBtn.setToolTipText("R → Randomize");
-
-    // Start button initial color
     startBtn.setBackground(new Color(244, 67, 54));
 
-    add(Box.createVerticalStrut(8)); // top padding
+    add(Box.createVerticalStrut(8)); 
     add(buttons);
-    add(Box.createVerticalStrut(12)); // spacing between buttons and sliders
+    add(Box.createVerticalStrut(12)); 
 
-    // ===== SLIDERS =====
     mutationSlider = new JSlider(0, 100, (int) (ga.getCurrentMutationRate() * 100));
     crossoverSlider = new JSlider(0, 100, (int) (ga.getCrossoverRate() * 100));
     populationSlider = new JSlider(10, 50, ga.getPopulationSize());
@@ -119,15 +112,13 @@ public class ControlPanel extends JPanel {
     sliders.add(populationSlider);
 
     add(sliders);
-    add(Box.createVerticalStrut(8)); // bottom padding
+    add(Box.createVerticalStrut(8)); 
 
-    // ===== ACTIONS =====
     startBtn.addActionListener(e -> toggleStartStop(ga, startAction, stopAction));
     stepBtn.addActionListener(e -> stepAction.run());
     restartBtn.addActionListener(e -> restartAction.run());
     randomizeBtn.addActionListener(e -> randomizeParameters(ga));
 
-    // ===== KEYBINDINGS =====
     setupKeyBindings(ga, startAction, stopAction, stepAction, restartAction);
   }
 

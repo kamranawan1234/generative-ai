@@ -25,7 +25,7 @@ public class App {
           ControlPanel controlPanel =
               new ControlPanel(
                   ga,
-                  () -> { // start
+                  () -> { 
                     if (timer[0] == null) {
                       timer[0] =
                           new Timer(
@@ -39,19 +39,19 @@ public class App {
                       timer[0].start();
                     }
                   },
-                  () -> { // stop
+                  () -> { 
                     if (timer[0] != null) {
                       timer[0].stop();
                       timer[0] = null;
                     }
                   },
-                  () -> { // step
+                  () -> { 
                     ga.evolveOneGeneration(popPanel);
                     popPanel.setPopulation(ga.getPopulation());
                     statsPanel.refresh();
                     histPanel.addFitness(ga.getAverageFitness());
                   },
-                  () -> { // restart
+                  () -> {
                     ga.restart();
                     popPanel.setPopulation(ga.getPopulation());
                     statsPanel.refresh();

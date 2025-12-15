@@ -1,4 +1,3 @@
-// ...existing code...
 package gui;
 
 import ga.GeneticAlgorithm;
@@ -6,7 +5,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class MainWindow extends JFrame {
-  // DARK MODE PATCH START
   public MainWindow(
       GeneticAlgorithm ga,
       PopulationPanel popPanel,
@@ -27,9 +25,7 @@ public class MainWindow extends JFrame {
     scrollPane.setBackground(new Color(24, 24, 24));
     scrollPane.getViewport().setBackground(new Color(24, 24, 24));
     scrollPane.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2));
-    // Set fixed viewport size for reliable scrolling
     scrollPane.getViewport().setPreferredSize(new Dimension(800, 600));
-    // Increase scroll speed
     scrollPane.getVerticalScrollBar().setUnitIncrement(32);
     scrollPane.getVerticalScrollBar().setBlockIncrement(128);
     scrollPane.getHorizontalScrollBar().setUnitIncrement(32);
@@ -48,5 +44,4 @@ public class MainWindow extends JFrame {
     setLocationRelativeTo(null);
     setVisible(true);
   }
-  // DARK MODE PATCH END
 }

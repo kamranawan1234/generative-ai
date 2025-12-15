@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 
 public class OperatorPanel extends JPanel {
-  // DARK MODE PATCH START
   private JLabel currentOperator;
 
   public OperatorPanel() {
@@ -28,5 +27,4 @@ public class OperatorPanel extends JPanel {
   public void setOperator(String op) {
     currentOperator.setText(op);
   }
-  // DARK MODE PATCH END
 }

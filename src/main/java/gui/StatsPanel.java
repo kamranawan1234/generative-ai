@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class StatsPanel extends JPanel {
-  // DARK MODE PATCH START
   private JLabel generationLabel = new JLabel("Generation: 0");
   private JLabel avgFitnessLabel = new JLabel("Avg Fitness: 0");
   private JLabel bestFitnessLabel = new JLabel("Best Fitness: 0");
@@ -15,18 +14,17 @@ public class StatsPanel extends JPanel {
   public StatsPanel(GeneticAlgorithm ga) {
     this.ga = ga;
 
-    // CENTERING FIX: FlowLayout with gaps
     setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
 
-    Font titleFont = new Font("Consolas", Font.BOLD, 14); // title font
+    Font titleFont = new Font("Consolas", Font.BOLD, 14);
     setBorder(
         BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(60, 60, 60)), // border color
-            "Stats", // title text
+            BorderFactory.createLineBorder(new Color(60, 60, 60)),
+            "Stats",
             TitledBorder.DEFAULT_JUSTIFICATION,
             TitledBorder.DEFAULT_POSITION,
-            titleFont, // set the font here
-            Color.WHITE // title color
+            titleFont,
+            Color.WHITE
             ));
 
     setBackground(new Color(30, 30, 30));
@@ -50,5 +48,4 @@ public class StatsPanel extends JPanel {
     avgFitnessLabel.setText(String.format("Avg Fitness: %.2f", ga.getAverageFitness()));
     bestFitnessLabel.setText(String.format("Best: %d", ga.getBestFitness()));
   }
-  // DARK MODE PATCH END
 }

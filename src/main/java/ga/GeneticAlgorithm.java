@@ -29,9 +29,6 @@ public class GeneticAlgorithm {
     initPopulation();
   }
 
-  // ============================
-  // Getters / Setters
-  // ============================
   public int getPopulationSize() {
     return populationSize;
   }
@@ -77,15 +74,11 @@ public class GeneticAlgorithm {
     return population;
   }
 
-  // ============================
-  // Initialization
-  // ============================
   private void initPopulation() {
     population = new Individual[populationSize];
     for (int i = 0; i < populationSize; i++) {
-      Individual ind = new Individual(chromosomeLength); // all genes false
+      Individual ind = new Individual(chromosomeLength);
       ind.setMutationRate(globalMutationRate);
-      // Don't evaluate fitness yet, starts at 0
       population[i] = ind;
     }
   }
@@ -102,9 +95,6 @@ public class GeneticAlgorithm {
     return best;
   }
 
-  // ============================
-  // Diversity Tracking
-  // ============================
   public double getDiversity() {
     double totalDistance = 0;
     int n = population.length;
@@ -117,13 +107,10 @@ public class GeneticAlgorithm {
         totalDistance += dist;
       }
     }
-    // normalize 0..1
+
     return totalDistance / ((n * (n - 1) / 2.0) * chromosomeLength);
   }
 
-  // ============================
-  // Evolution
-  // ============================
   public void evolveOneGeneration(PopulationPanel panel) {
 
     Individual[] newPop = new Individual[populationSize];
@@ -141,7 +128,6 @@ public class GeneticAlgorithm {
 
       boolean doCross = rand.nextDouble() < crossoverRate;
 
-      // --- CROSSOVER ---
       if (doCross) {
         int point = rand.nextInt(chromosomeLength);
         for (int j = 0; j < chromosomeLength; j++) {
@@ -165,7 +151,6 @@ public class GeneticAlgorithm {
       panel.highlightCrossover(i, crossMask1);
       if (i + 1 < populationSize) panel.highlightCrossover(i + 1, crossMask2);
 
-      // --- SELF-ADAPTIVE MUTATION ---
       boolean[] mutMask1 = new boolean[chromosomeLength];
       boolean[] mutMask2 = new boolean[chromosomeLength];
 
@@ -185,13 +170,9 @@ public class GeneticAlgorithm {
     population = newPop;
     generation++;
 
-    // --- update slider automatically ---
     updateMutationSlider();
   }
 
-  // ============================
-  // Tournament Selection
-  // ============================
   private Individual tournamentSelection() {
     Individual best = population[rand.nextInt(populationSize)];
     for (int i = 0; i < 2; i++) {
@@ -201,41 +182,30 @@ public class GeneticAlgorithm {
     return best;
   }
 
-  // ============================
-  // Self-Adaptive Mutation
-  // ============================
   private void mutateSelfAdaptive(Individual child, boolean[] mask, Individual parent) {
 
     double parentRate = parent.getMutationRate();
 
-    // ES-style log-normal mutation (no upper clamp)
     double tau = 0.1;
     double newRate = parentRate * Math.exp(rand.nextGaussian() * tau);
     if (newRate < 0.001) newRate = 0.001;
 
     child.setMutationRate(newRate);
 
-    // mutate genes
     for (int i = 0; i < chromosomeLength; i++) {
-      if (rand.nextDouble() < Math.min(newRate, 1.0)) { // treat >1 as 100%
+      if (rand.nextDouble() < Math.min(newRate, 1.0)) { 
         child.setGene(i, !child.getChromosome()[i]);
         mask[i] = true;
       }
     }
   }
 
-  // ============================
-  // Restart
-  // ============================
   public void restart() {
     generation = 0;
     initPopulation();
     updateMutationSlider();
   }
 
-  // ============================
-  // UI Notification
-  // ============================
   private void updateMutationSlider() {
     if (controlPanel != null) controlPanel.updateMutationSlider(this);
   }

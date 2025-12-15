@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class FitnessHistoryPanel extends JPanel {
-  private static final int MAX_HISTORY = 500; // Max number of generations to keep
+  private static final int MAX_HISTORY = 500; 
   private final Deque<Double> history = new ArrayDeque<>();
   private int hoverGen = -1;
 
@@ -22,14 +22,14 @@ public class FitnessHistoryPanel extends JPanel {
 
   public FitnessHistoryPanel() {
     setPreferredSize(new Dimension(400, 250));
-    Font titleFont = new Font("Consolas", Font.BOLD, 14); // your desired font
+    Font titleFont = new Font("Consolas", Font.BOLD, 14);
     TitledBorder border =
         BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(GRAPH_BG),
             "Fitness History",
             TitledBorder.DEFAULT_JUSTIFICATION,
             TitledBorder.DEFAULT_POSITION,
-            titleFont, // <--- here
+            titleFont, 
             Color.WHITE);
     setBorder(border);
 
@@ -110,7 +110,6 @@ public class FitnessHistoryPanel extends JPanel {
     int graphW = w - leftMargin - rightMargin;
     int graphH = h - topMargin - bottomMargin;
 
-    // Background
     g2.setColor(GRAPH_BG);
     g2.fillRect(leftMargin, topMargin, graphW, graphH);
 
@@ -124,13 +123,11 @@ public class FitnessHistoryPanel extends JPanel {
   }
 
   private void drawAxes(Graphics2D g2, int left, int top, int graphW, int graphH) {
-    // Axes
     g2.setColor(AXIS_COLOR);
     g2.setStroke(new BasicStroke(2));
-    g2.drawLine(left, top, left, top + graphH); // Y-axis
-    g2.drawLine(left, top + graphH, left + graphW, top + graphH); // X-axis
+    g2.drawLine(left, top, left, top + graphH); 
+    g2.drawLine(left, top + graphH, left + graphW, top + graphH);
 
-    // Y-ticks & labels
     g2.setFont(new Font("Consolas", Font.PLAIN, 12));
     int numYTicks = 5;
     Double[] histArray = history.toArray(new Double[0]);
@@ -148,7 +145,6 @@ public class FitnessHistoryPanel extends JPanel {
     g2.setColor(LABEL_COLOR);
     g2.drawString("Fitness", left - 55, top - 10);
 
-    // X-ticks & labels
     int numXTicks = Math.min(10, histArray.length);
     for (int i = 0; i <= numXTicks; i++) {
       int x = left + i * graphW / numXTicks;
