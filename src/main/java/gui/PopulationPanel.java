@@ -135,7 +135,7 @@ public class PopulationPanel extends JPanel {
       g2.setColor(new Color(120, 120, 120));
     }
     g2.setColor(new Color(220, 220, 220));
-    g2.drawString("Chromosome Position", xOffset + gridW / 2 - 60, yOffset - 35);
+    g2.drawString("Gene", xOffset + gridW / 2 - 15, yOffset - 35);
 
     // Draw row axis (individual index)
     int rowTickStep = Math.max(1, numRows / 10);
