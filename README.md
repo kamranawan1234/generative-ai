@@ -86,15 +86,5 @@ If you need reproducible experiments, seed the RNGs in `ga.GeneticAlgorithm` and
 - UI NullPointerException on start (Metal LAF issue): use the Basic LAF fix in `gui.ControlPanel` (already applied in this repo).
 - If the GUI freezes, the GA may be doing heavy work on the EDT. Try smaller population/chromosome sizes or refactor compute off the EDT.
 
-## Useful commands summary
-```bash
-# compile
-javac --release 21 -d target/classes $(find src/main/java -name '*.java')
-# run
-java -cp target/classes App
-```
-
-If you want me to add a Maven `pom.xml` change, an executable jar or a small run script (`scripts/run.sh`), tell me which and I will add it.
-
 ---
-Generated on December 14, 2025 — use Java 21 to run.
+
