@@ -36,6 +36,38 @@ java -cp target/classes App
 
 The application opens a Swing window with controls, a population grid and a fitness history plot.
 
+## Run on Windows (PowerShell and CMD)
+
+These steps show two simple ways to build and run the project on Windows using a Java 21 JDK.
+
+Prerequisite: install a Java 21 JDK (for example, Temurin/Adoptium, Azul or Oracle). Ensure the JDK's `bin` folder (javac/java) is on your PATH, or use the full path to the binaries.
+
+PowerShell (recommended):
+
+```powershell
+# from project root
+Get-ChildItem -Path .\src\main\java -Recurse -Filter *.java | Select-Object -ExpandProperty FullName > sources.txt
+javac --release 21 -d target\classes @sources.txt
+java -cp target\classes App
+```
+
+CMD (legacy):
+
+```cmd
+:: from project root
+dir /b /s src\main\java\*.java > sources.txt
+javac --release 21 -d target\classes @sources.txt
+java -cp target\classes App
+```
+
+If you have multiple JDKs installed, run the explicit Java executable instead of relying on PATH, for example:
+
+```powershell
+"C:\Program Files\Eclipse Adoptium\jdk-21.0.0+xx\bin\java" -cp target\classes App
+```
+
+If you prefer an IDE on Windows, open the project in IntelliJ IDEA or VS Code with the Java extension, select the Java 21 JDK, and run the `App` main class.
+
 ## Using Maven (optional)
 If you use Maven, ensure `maven-compiler-plugin` targets Java 21. Then run:
 
