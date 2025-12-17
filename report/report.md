@@ -27,3 +27,12 @@ The application is written in Java using Java Swing for the graphical interface.
 The graphical interface has a panel that shows the population and highlights selected parents, crossover points, mutated genes, and the best individuals. There is a stats panel that shows the current generation, the average fitness, and the best fitness. There is a fitness graph that tracks changes over time. There is a control panel that lets the user start or stop the simulation, step through generations, restart, and randomize the population. The sliders let the user adjust the mutation rate, crossover rate, and population size.
 
 The graphical interface gets the updated population from the algorithm every generation. It updates the visualization to reflect changes. The colors and highlights show the effects of selection, crossover, and mutation. The design keeps the algorithm separate from the interface. This makes the program easier to understand and maintain.
+
+## Conclusion
+This project shows that visualization can help people learn genetic algorithms. Users can watch how selection, crossover, mutation, and replacement change the population. They can see which genes are passed on, which genes mutate, and which individuals are the fittest. Watching the process makes it easier to understand how populations evolve over generations.
+
+The project also shows how to make a program that is educational and interactive. The design can be expanded to show other evolutionary algorithms or to allow more customization of the simulation. The application helps users understand evolutionary computation in a simple and clear way. It allows learners to see how the algorithms work and how changing parameters affects the outcome.
+
+## References
+Holland J H. Adaptation in Natural and Artificial Systems. MIT Press, 1992.
+Goldberg D E. Genetic Algorithms in Search, Optimization, and Machine Learning. Addison-Wesley, 1989.
