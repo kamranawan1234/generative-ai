@@ -7,8 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 
+/** Panel responsible for rendering the whole population as a grid of genes. */
 public class PopulationPanel extends JPanel {
-  private Individual[] population;
+  private transient Individual[] population;
   private int fixedCellSize = -1;
   private static final int LEFT_MARGIN = 100;
   private static final int TOP_MARGIN = 50;
@@ -17,13 +18,20 @@ public class PopulationPanel extends JPanel {
   private List<Point> mutationPoints = new ArrayList<>();
   private List<Point> crossoverPoints = new ArrayList<>();
 
+  /** Create the population panel and configure its appearance. */
   public PopulationPanel() {
     setBackground(new Color(24, 24, 24));
     setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2));
   }
 
+  /**
+   * Set the population to display and compute layout parameters.
+   *
+   * @param population array of individuals to render
+   */
   public void setPopulation(Individual[] population) {
-    this.population = population;
+    // Defensive copy to avoid storing externally mutable array reference
+    this.population = (population == null) ? null : Arrays.copyOf(population, population.length);
     if (fixedCellSize == -1 && population != null && population.length > 0) {
       int numCols = population[0].getChromosome().length;
       int maxCell = 18;
@@ -34,25 +42,34 @@ public class PopulationPanel extends JPanel {
       }
 
       if (availWidth <= 0) {
-        availWidth = Math.max(600, java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 200);
+        availWidth =
+            Math.max(600, java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 200);
       }
 
       int usableWidth = Math.max(100, availWidth - LEFT_MARGIN - RIGHT_MARGIN);
       fixedCellSize = Math.max(4, usableWidth / Math.max(1, numCols));
       fixedCellSize = Math.min(maxCell, fixedCellSize);
 
-      while (LEFT_MARGIN + RIGHT_MARGIN + fixedCellSize * numCols > availWidth && fixedCellSize > 1) {
+      while (LEFT_MARGIN + RIGHT_MARGIN + fixedCellSize * numCols > availWidth
+          && fixedCellSize > 1) {
         fixedCellSize--;
       }
     }
-    revalidate(); 
+    revalidate();
     repaint();
   }
 
+  /** Request a repaint to refresh the visual representation. */
   public void refresh() {
     repaint();
   }
 
+  /**
+   * Temporarily highlight mutated genes for a given individual.
+   *
+   * @param individualIndex index of the individual in the population
+   * @param mutationMask boolean mask indicating mutated gene positions
+   */
   public void highlightMutations(int individualIndex, boolean[] mutationMask) {
     for (int j = 0; j < mutationMask.length; j++) {
       if (mutationMask[j]) mutationPoints.add(new Point(individualIndex, j));
@@ -69,6 +86,12 @@ public class PopulationPanel extends JPanel {
         .start();
   }
 
+  /**
+   * Temporarily highlight crossover-affected genes for a given individual.
+   *
+   * @param individualIndex index of the individual in the population
+   * @param crossoverMask boolean mask indicating crossover-affected positions
+   */
   public void highlightCrossover(int individualIndex, boolean[] crossoverMask) {
     for (int j = 0; j < crossoverMask.length; j++) {
       if (crossoverMask[j]) crossoverPoints.add(new Point(individualIndex, j));
@@ -85,13 +108,14 @@ public class PopulationPanel extends JPanel {
         .start();
   }
 
+  /** Render the population grid and visual markers. */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     setBackground(new Color(24, 24, 24));
     if (population == null) return;
 
-  int numCols = population[0].getChromosome().length;
+    int numCols = population[0].getChromosome().length;
     int numRows = population.length;
     int cellSize = (fixedCellSize != -1) ? fixedCellSize : 32;
 
@@ -172,6 +196,7 @@ public class PopulationPanel extends JPanel {
     }
   }
 
+  /** Return a preferred size based on population dimensions and margins. */
   @Override
   public Dimension getPreferredSize() {
     if (population != null && population.length > 0) {

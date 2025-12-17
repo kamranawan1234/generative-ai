@@ -7,23 +7,30 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import javax.swing.*;
 
+/** Control panel containing buttons and sliders to operate the genetic algorithm. */
 public class ControlPanel extends JPanel {
   private final JButton startBtn = new JButton("Start");
   private final JButton stepBtn = new JButton("Step");
   private final JButton restartBtn = new JButton("Restart");
   private final JButton randomizeBtn = new JButton("Randomize");
-
   private final JSlider mutationSlider;
   private final JSlider crossoverSlider;
   private final JSlider populationSlider;
-
   private final JLabel mutationLabel;
   private final JLabel crossoverLabel;
   private final JLabel populationLabel;
-
   private final Random random = new Random();
   private boolean isRunning = false;
 
+  /**
+   * Create a control panel wired to the provided actions and GA instance.
+   *
+   * @param ga the genetic algorithm instance
+   * @param startAction runnable invoked to start automated evolution
+   * @param stopAction runnable invoked to stop automated evolution
+   * @param stepAction runnable invoked to perform a single evolution step
+   * @param restartAction runnable invoked to restart the population
+   */
   public ControlPanel(
       GeneticAlgorithm ga,
       Runnable startAction,
@@ -58,9 +65,9 @@ public class ControlPanel extends JPanel {
     randomizeBtn.setToolTipText("R → Randomize");
     startBtn.setBackground(new Color(244, 67, 54));
 
-    add(Box.createVerticalStrut(8)); 
+    add(Box.createVerticalStrut(8));
     add(buttons);
-    add(Box.createVerticalStrut(12)); 
+    add(Box.createVerticalStrut(12));
 
     mutationSlider = new JSlider(0, 100, (int) (ga.getCurrentMutationRate() * 100));
     crossoverSlider = new JSlider(0, 100, (int) (ga.getCrossoverRate() * 100));
@@ -112,7 +119,7 @@ public class ControlPanel extends JPanel {
     sliders.add(populationSlider);
 
     add(sliders);
-    add(Box.createVerticalStrut(8)); 
+    add(Box.createVerticalStrut(8));
 
     startBtn.addActionListener(e -> toggleStartStop(ga, startAction, stopAction));
     stepBtn.addActionListener(e -> stepAction.run());
@@ -122,6 +129,13 @@ public class ControlPanel extends JPanel {
     setupKeyBindings(ga, startAction, stopAction, stepAction, restartAction);
   }
 
+  /**
+   * Create a consistent label for slider values.
+   *
+   * @param title small title for the value
+   * @param value textual value to display
+   * @return configured JLabel
+   */
   private JLabel makeValueLabel(String title, String value) {
     JLabel label = new JLabel(title + ": " + value);
     label.setForeground(Color.WHITE);
@@ -130,6 +144,12 @@ public class ControlPanel extends JPanel {
     return label;
   }
 
+  /**
+   * Apply custom slider UI styling using the given color.
+   *
+   * @param slider slider to style
+   * @param color primary color for the slider UI
+   */
   private void styleSlider(JSlider slider, Color color) {
     slider.setBackground(new Color(30, 30, 30));
     slider.setForeground(color);
@@ -162,6 +182,11 @@ public class ControlPanel extends JPanel {
         });
   }
 
+  /**
+   * Configure button visual properties and interactive styling.
+   *
+   * @param button the button to style
+   */
   private void styleButton(JButton button) {
     button.setFocusPainted(false);
     button.setFont(new Font("Consolas", Font.BOLD, 14));
@@ -183,6 +208,13 @@ public class ControlPanel extends JPanel {
             });
   }
 
+  /**
+   * Toggle between running and stopped state. Updates button text and appearance.
+   *
+   * @param ga the genetic algorithm instance
+   * @param startAction action to start automated evolution
+   * @param stopAction action to stop automated evolution
+   */
   private void toggleStartStop(GeneticAlgorithm ga, Runnable startAction, Runnable stopAction) {
     if (!isRunning) {
       startAction.run();
@@ -196,6 +228,11 @@ public class ControlPanel extends JPanel {
     isRunning = !isRunning;
   }
 
+  /**
+   * Pick and apply a random set of parameters and update the GA and UI.
+   *
+   * @param ga the genetic algorithm instance
+   */
   private void randomizeParameters(GeneticAlgorithm ga) {
     int newMutation = random.nextInt(101);
     int newCrossover = random.nextInt(101);
@@ -214,6 +251,15 @@ public class ControlPanel extends JPanel {
     populationLabel.setText("Population Size: " + newPopulation);
   }
 
+  /**
+   * Configure global key bindings for control actions (space/enter/X/R).
+   *
+   * @param ga the genetic algorithm instance
+   * @param startAction action to start evolution
+   * @param stopAction action to stop evolution
+   * @param stepAction action to perform a single step
+   * @param restartAction action to restart population
+   */
   private void setupKeyBindings(
       GeneticAlgorithm ga,
       Runnable startAction,
@@ -264,6 +310,11 @@ public class ControlPanel extends JPanel {
         });
   }
 
+  /**
+   * Update the mutation slider to reflect the current average mutation rate from the GA.
+   *
+   * @param ga the genetic algorithm instance
+   */
   public void updateMutationSlider(GeneticAlgorithm ga) {
     double avgMutationRate = ga.getAverageMutationRate();
     mutationSlider.setValue((int) (avgMutationRate * 100));

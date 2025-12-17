@@ -3,9 +3,11 @@ package gui;
 import java.awt.*;
 import javax.swing.*;
 
+/** Panel that displays the currently selected genetic operator. */
 public class OperatorPanel extends JPanel {
   private JLabel currentOperator;
 
+  /** Create an OperatorPanel and initialize its UI. */
   public OperatorPanel() {
     setLayout(new BorderLayout());
     setBorder(
@@ -24,6 +26,11 @@ public class OperatorPanel extends JPanel {
     add(currentOperator, BorderLayout.CENTER);
   }
 
+  /**
+   * Update the displayed operator text.
+   *
+   * @param op operator name to display
+   */
   public void setOperator(String op) {
     currentOperator.setText(op);
   }

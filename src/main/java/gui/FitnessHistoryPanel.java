@@ -9,7 +9,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class FitnessHistoryPanel extends JPanel {
-  private static final int MAX_HISTORY = 500; 
+  private static final int MAX_HISTORY = 500;
+
   private final Deque<Double> history = new ArrayDeque<>();
   private int hoverGen = -1;
 
@@ -20,6 +21,7 @@ public class FitnessHistoryPanel extends JPanel {
   private static final Color HOVER_COLOR = new Color(255, 220, 80);
   private static final Color GRAPH_BG = new Color(60, 60, 60);
 
+  /** Create the fitness history panel and configure mouse interactions. */
   public FitnessHistoryPanel() {
     setPreferredSize(new Dimension(400, 250));
     Font titleFont = new Font("Consolas", Font.BOLD, 14);
@@ -29,7 +31,7 @@ public class FitnessHistoryPanel extends JPanel {
             "Fitness History",
             TitledBorder.DEFAULT_JUSTIFICATION,
             TitledBorder.DEFAULT_POSITION,
-            titleFont, 
+            titleFont,
             Color.WHITE);
     setBorder(border);
 
@@ -47,6 +49,11 @@ public class FitnessHistoryPanel extends JPanel {
         });
   }
 
+  /**
+   * Append a fitness value to the history and request a repaint.
+   *
+   * @param fitness fitness value to record
+   */
   public void addFitness(double fitness) {
     if (history.size() >= MAX_HISTORY) {
       history.pollFirst();
@@ -55,12 +62,20 @@ public class FitnessHistoryPanel extends JPanel {
     repaint();
   }
 
+  /** Clear the stored fitness history and reset hover state. */
   public void clear() {
     history.clear();
     hoverGen = -1;
     repaint();
   }
 
+  /**
+   * Find the closest generation point to the supplied mouse coordinates.
+   *
+   * @param mx mouse x coordinate
+   * @param my mouse y coordinate
+   * @return index of the closest generation or -1 if none
+   */
   private int getClosestGeneration(int mx, int my) {
     if (history.isEmpty()) return -1;
 
@@ -95,6 +110,7 @@ public class FitnessHistoryPanel extends JPanel {
     return closest;
   }
 
+  /** Paint the background graph, axes, fitness line, and hover marker. */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -122,10 +138,11 @@ public class FitnessHistoryPanel extends JPanel {
     g2.dispose();
   }
 
+  /** Draw axes and tick labels for the fitness graph. */
   private void drawAxes(Graphics2D g2, int left, int top, int graphW, int graphH) {
     g2.setColor(AXIS_COLOR);
     g2.setStroke(new BasicStroke(2));
-    g2.drawLine(left, top, left, top + graphH); 
+    g2.drawLine(left, top, left, top + graphH);
     g2.drawLine(left, top + graphH, left + graphW, top + graphH);
 
     g2.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -158,6 +175,7 @@ public class FitnessHistoryPanel extends JPanel {
     g2.drawString("Generation", left + graphW / 2 - 35, top + graphH + 50);
   }
 
+  /** Draw the polyline representing fitness over time. */
   private void drawFitnessLine(Graphics2D g2, int left, int top, int graphW, int graphH) {
     Double[] histArray = history.toArray(new Double[0]);
     double max = histArray[0];
@@ -175,6 +193,7 @@ public class FitnessHistoryPanel extends JPanel {
     }
   }
 
+  /** Draw a marker for the currently hovered generation, if any. */
   private void drawHoverMarker(Graphics2D g2, int left, int top, int graphW, int graphH) {
     if (hoverGen < 0 || history.isEmpty()) return;
 

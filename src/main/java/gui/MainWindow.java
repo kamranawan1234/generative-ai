@@ -1,10 +1,21 @@
 package gui;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import ga.GeneticAlgorithm;
 import java.awt.*;
 import javax.swing.*;
 
 public class MainWindow extends JFrame {
+  /**
+   * Main application window that arranges the population view and control panels.
+   *
+   * @param ga genetic algorithm instance used by UI components
+   * @param popPanel panel that visualizes the population
+   * @param statsPanel panel showing numeric statistics
+   * @param histPanel panel showing fitness history over generations
+   * @param controlPanel panel providing control actions
+   */
+  @SuppressFBWarnings("MC_OVERRIDABLE_METHOD_CALL_IN_CONSTRUCTOR")
   public MainWindow(
       GeneticAlgorithm ga,
       PopulationPanel popPanel,
@@ -15,7 +26,11 @@ public class MainWindow extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
 
-    getContentPane().setBackground(new Color(24, 24, 24));
+    // Defer altering the content pane background until after construction to avoid
+    // calling potentially-overridable methods from the constructor (avoids a SpotBugs
+    // MC_OVERRIDABLE_METHOD_CALL_IN_CONSTRUCTOR warning).
+    javax.swing.SwingUtilities.invokeLater(
+        () -> getContentPane().setBackground(new Color(24, 24, 24)));
     popPanel.setAutoscrolls(true);
     JScrollPane scrollPane =
         new JScrollPane(
