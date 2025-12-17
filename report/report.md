@@ -1,6 +1,6 @@
 
 
-# Genetic Algorithm Visualizer
+# Genetic Algorithm Visualizer Report
 
 
 ## Introduction
@@ -20,3 +20,10 @@ At the top right, there is a stats panel that shows the current generation, the 
 
 Below the fitness graph is a control panel. The control panel has buttons to start and stop the simulation, step one generation at a time, restart the population, and randomize the population. There are also sliders to adjust the population size, the crossover rate, and the mutation rate. The population size and crossover rate remain constant while the simulation runs. The mutation rate changes automatically for each offspring. This gives users the ability to see how changing parameters can change the outcome of the evolution.
 The application runs the genetic algorithm continuously when the simulation is started. The population changes are updated in real time. Users can pause the simulation to observe details. The visualization shows clearly which genes are selected, which genes are mutated, and which individuals have the best fitness. This makes it easy to understand how evolutionary computation works in practice.
+
+## Software Architecture
+The application is written in Java using Java Swing for the graphical interface. The design separates the genetic algorithm from the graphical interface. The genetic algorithm has an individual class. Each individual stores its genes and fitness value. The algorithm implements selection, single-point crossover, mutation, and replacement. The population is stored as arrays. The fitness evaluation calculates which individuals are better than others.
+
+The graphical interface has a panel that shows the population and highlights selected parents, crossover points, mutated genes, and the best individuals. There is a stats panel that shows the current generation, the average fitness, and the best fitness. There is a fitness graph that tracks changes over time. There is a control panel that lets the user start or stop the simulation, step through generations, restart, and randomize the population. The sliders let the user adjust the mutation rate, crossover rate, and population size.
+
+The graphical interface gets the updated population from the algorithm every generation. It updates the visualization to reflect changes. The colors and highlights show the effects of selection, crossover, and mutation. The design keeps the algorithm separate from the interface. This makes the program easier to understand and maintain.
